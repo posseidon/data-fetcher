@@ -1,0 +1,19 @@
+{
+  "service": {
+    "name": "df-postgres",
+    "id": "df-postgres",
+    "tags": ["db", "postgres"],
+    "address": "172.20.0.10",
+    "port": 5432,
+    "checks": [
+      {
+        "id": "df-postgres-tcp",
+        "name": "PostgreSQL TCP readiness",
+        "tcp": "172.20.0.10:5432",
+        "interval": "10s",
+        "timeout": "5s",
+        "deregister_critical_service_after": "1m"
+      }
+    ]
+  }
+}
