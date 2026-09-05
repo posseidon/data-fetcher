@@ -3,6 +3,8 @@
 Auto-generated from feature plans. Last updated: 2026-09-05
 
 ## Active Technologies
+- N/A — no application code in this sub-feature (app stack: Quarkus/Java 21 handled in 001-FR-03) + Docker Compose v2 (existing `docker-compose.yml` from 001-FR-01) | host filesystem bind moun (001-FR-02)
+- Host path `~/data/bronze` → container `/data/bronze` (bind mount, not a named volume) (001-FR-02)
 
 - Docker Compose v2 + PostgreSQL 18 + Consul 2.0 (001-project-skeleton)
 - PostgreSQL 18 (001-project-skeleton)
@@ -34,6 +36,7 @@ No application code in this sub-feature (infrastructure declaration).
 App conventions (Quarkus/Java 21) tracked from 001-FR-03 onward.
 
 ## Recent Changes
+- 001-FR-02: Added N/A — no application code in this sub-feature (app stack: Quarkus/Java 21 handled in 001-FR-03) + Docker Compose v2 (existing `docker-compose.yml` from 001-FR-01) | host filesystem bind moun
 
 - 001-project-skeleton: Added Docker Compose v2 infra — PostgreSQL 18 +
   Consul 2.0 on `df-net` bridge, loopback-only bindings, readiness

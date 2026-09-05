@@ -5,6 +5,12 @@
 **Status**: Draft
 **Input**: Decomposition of feature 001 (Project Skeleton), parent user story "Boot local infrastructure" (P1) and parent FR-003.
 
+## Clarifications
+
+### Session 2026-09-05
+
+- Q: How should `~/data/bronze` be handled on first boot when it doesn't exist? → A: Explicit host-side pre-create script (`mkdir -p ~/data/bronze`) run before `compose up`.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Bronze reachable on host and in container (Priority: P1)
@@ -40,9 +46,9 @@ and confirming it appears at `~/data/bronze` on the host (and vice versa).
 
 ### Edge Cases
 
-- What happens when `~/data/bronze` does not exist on first boot? (Compose must
-  create it, or explicitly fail with guidance — never silently bind a wrong
-  path.)
+- What happens when `~/data/bronze` does not exist on first boot? (Resolved:
+  explicit `mkdir -p ~/data/bronze` runs before `compose up`; compose fails
+  if path absent.)
 - What happens when the host path exists but is a file, not a directory?
   (Compose must fail with a clear message.)
 - What happens when a file is written by the container as root? (Ownership/permission
@@ -55,6 +61,10 @@ and confirming it appears at `~/data/bronze` on the host (and vice versa).
 - **FR-003**: A Docker volume/bind mount MUST expose the service's Bronze path
   such that `~/data/bronze` on the host and the container's Bronze root point
   to the same files (default container path `/data/bronze`).
+- **FR-003a**: The host directory `~/data/bronze` MUST be pre-created via an
+  explicit `mkdir -p ~/data/bronze` step before `docker compose up`. Compose
+  will not auto-create the path; relying on auto-creation risks a silent
+  bind to the wrong location.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -76,7 +86,7 @@ and confirming it appears at `~/data/bronze` on the host (and vice versa).
 - The host path is `~/data/bronze`; the container path is `/data/bronze`
   (matches the constitution's default Bronze root, also the default in
   sub-feature 001-FR-04's `application.properties`).
-- `~/data/bronze` may be created by the mount on first boot; explicit creation
-  on the host is acceptable if the mount cannot self-create.
+- `~/data/bronze` MUST be pre-created on the host before `docker compose up`
+  (via `mkdir -p ~/data/bronze`); compose will not auto-create it.
 - No application code writes to Bronze in this sub-feature; only the mount
   contract is proven here.
