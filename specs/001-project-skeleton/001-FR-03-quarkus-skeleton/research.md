@@ -88,7 +88,10 @@ Phase 0 output — decisions, rationale, alternatives. Both spec ambiguities
   owns it), so `quarkus:dev` boots with **no DB dependency and no source
   registry**; when a datasource is later present but PG is down, Quarkus'
   lazy datasource leaves boot successful and connection failures surface at
-  first use (clarification: Option B).
+  first use (clarification: Option B). **Superseded for the dev profile** by
+  001-FR-04 SC-007: with a datasource now configured in dev, the probe fails
+  boot loudly on "pg down" — the lazy-posture wording above applies to the
+  FR-03 slice only.
 - **Rationale**: The clarified spec (US1, Edge Cases, Assumptions) is
   explicit: skeleton must boot successfully and must not *silently* mask DB
   problems — surfacing error at first use satisfies this without duplicating

@@ -33,17 +33,21 @@ SDKs, Consul client, and unapproved libraries MUST NOT be added (FR-004).
 ## Boot behavior contract
 
 - Skeleton boots with **no feature endpoints**.
-- Boot **succeeds with PostgreSQL 18 down** (lazy datasource); DB connection
-  failures surface at first use — no silent fallback, no boot-time crash
-  (clarified Q1, 2026-09-05).
+- **No datasource configured yet** (this slice): boot succeeds regardless of
+  PostgreSQL 18 — DB errors surface at first use (clarified Q1, 2026-09-05).
+- **Superseded for the dev profile by 001-FR-04**: from 001-FR-04 onward,
+  `application-dev.properties` configures a datasource and a startup
+  reachability probe makes `quarkus:dev` FAIL loudly when PostgreSQL 18 is down
+  (SC-007). Non-dev profiles keep this lazy posture.
 - Hard fail-fast validation of runtime config is **feature 005**, not this
   slice.
 
 ## Extension points (what later features add on top)
 
-- **001-FR-04**: `src/main/resources/application.properties` — datasource
+- **001-FR-04**: `src/main/resources/application-dev.properties` — datasource
   defaults, virtual threads, Bronze root `/data/bronze`, overriding
-  `quarkus.http.port` if needed. Adds feature config on this root module.
+  `quarkus.http.port` if needed — plus the `StartupRuntimeProbe` boot observer.
+  Adds feature config on this root module.
 - **001-FR-02 → app service**: the `df-bronze-mount` carrier service continues
   to own the `/data/bronze` bind mount until a future slice wires the app
   service container against the same target path.

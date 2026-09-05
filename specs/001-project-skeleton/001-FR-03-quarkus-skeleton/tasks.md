@@ -227,4 +227,6 @@ Task: "Measure SC-003 boot time"
 - Do NOT touch `docker-compose.yml` / `scripts/` — infra ownership is
   001-FR-01/02; `df-bronze-mount` carrier stays until the app service wires in.
 - Boot must succeed with PostgreSQL 18 down; hard fail-fast validation is
-  feature 005 (spec Clarifications).
+  feature 005 (spec Clarifications). **Superseded for the dev profile** by
+  001-FR-04 SC-007: `quarkus:dev` with PG down now fails startup loudly via
+  the dev-profile reachability probe.

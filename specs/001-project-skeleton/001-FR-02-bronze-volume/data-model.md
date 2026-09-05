@@ -47,7 +47,7 @@ artifact writer (feature 004) later fills with the constitutional
 
 - Host dir MUST exist before `compose up` (FR-003a); compose fails loudly if absent.
 - Container path is exactly `/data/bronze` (constitution default; must match
-  001-FR-04 `application.properties` default and the app service in FR-03/04).
+  001-FR-04 `application-dev.properties` default and the app service in FR-03/04).
 - No named volume fallback (research D1) — must remain a bind mount.
 - No application code writes to Bronze in this slice (spec Assumptions).
 - No secrets involved; bind path is fixed host-local `~/data/bronze`.

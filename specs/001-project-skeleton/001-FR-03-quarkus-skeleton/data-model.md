@@ -49,7 +49,8 @@ Consul client, no health extension, no rest-assured.
 | wrapper present | clone (jar committed) | `./mvnw -v` works offline-first |
 | wrapper missing | partial checkout / gitignore mistake | scripts attempt `wrapperUrl` download (should not happen on clean clone) |
 | app booted (dev) | `./mvnw quarkus:dev` | startup log reports HTTP port 8080, no endpoints |
-| PG 18 down | app started without reachable DB | boot still succeeds; DB errors surface at first use (clarify Q1) |
+| PG 18 down (post-001-FR-04, dev) | app started without reachable DB | dev profile probe FAILS boot loudly (SC-007; supersedes earlier lazy posture) |
+| PG 18 down (no datasource) | app started without configured DS | boot succeeds; DB errors surface at first use (pre-001-FR-04 / non-dev) |
 | build verified | `./mvnw verify` | smoke test executes and passes |
 
 ## Constraints & validation rules
@@ -73,4 +74,4 @@ Consul client, no health extension, no rest-assured.
 - HTTP port: `8080` (Quarkus default — no config override this slice)
 - Coordinates: `dev.datafetcher:data-fetcher` (Java 21)
 - Pinned versions: Quarkus `3.33.3.1` | Maven `3.9.9` | wrapper `3.3.2`
-- Runtime-config home for later features: `src/main/resources/application.properties` (created by 001-FR-04)
+- Runtime-config home for later features: `src/main/resources/application-dev.properties` (created by 001-FR-04, dev profile)

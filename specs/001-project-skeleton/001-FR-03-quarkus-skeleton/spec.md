@@ -9,7 +9,7 @@
 
 ### Session 2026-09-05
 
-- Q: What happens when the app boots with PostgreSQL 18 down? → A: Boot succeeds; DB connection failures surface in the log / at first use — no silent fallback. Hard fail-fast (exit non-zero on unreachable config) stays feature 005.
+- Q: What happens when the app boots with PostgreSQL 18 down? → A: Boot succeeds; DB connection failures surface in the log / at first use — no silent fallback. Hard fail-fast (exit non-zero on unreachable config) stays feature 005. **SUPERSEDED for the dev profile by 001-FR-04 SC-007** — the dev-profile probe now fails boot loudly when status is "pg down".
 - Q: May the skeleton include test-scope dependencies? → A: Yes — `quarkus-junit` (test scope) plus one minimal boot smoke test; the runtime dependency set stays exactly the constitution-mandated minimum, making `./mvnw verify` non-trivial.
 
 ## User Scenarios & Testing *(mandatory)*
@@ -69,7 +69,8 @@ clean checkout and observing a successful build + one passing smoke test.
 - What happens when the app starts with PostgreSQL 18 down? (Boot must still
   succeed — Quarkus datasource is lazy; DB connection failures surface in the
   log / at first use, not silently masked. No silent fallback. Hard fail-fast
-  (exit non-zero on unreachable config) is feature 005.)
+  (exit non-zero on unreachable config) is feature 005. **Superseded for the
+  dev profile**: 001-FR-04 SC-007 probe fails boot loudly.)
 - What happens when Java 21 is not the active toolchain? (Build must fail with
   a clear, attributable error, not a cryptic class-version failure.)
 
@@ -113,7 +114,8 @@ clean checkout and observing a successful build + one passing smoke test.
   not required to be pre-installed, only a Java 21 toolchain.
 - PostgreSQL 18 need not be up for a skeleton boot (Quarkus lazy datasource);
   when down, DB connection failures surface in the log / at first use — no
-  silent fallback and no boot-time crash. Hard fail-fast enforcement of
+  silent fallback and no boot-time crash (superseded for the DEV profile by
+  001-FR-04 SC-007: boot fails loudly). Hard fail-fast enforcement of
   config validity remains feature 005.
 - Runtime dependency set is exactly the constitution-mandated minimum (FR-004);
   no speculative libraries (e.g. Consul 2.0 client, WebSocket/MCP SDKs) are
