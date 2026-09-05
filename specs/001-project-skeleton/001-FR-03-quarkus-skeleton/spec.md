@@ -5,6 +5,13 @@
 **Status**: Draft
 **Input**: Decomposition of feature 001 (Project Skeleton), parent user stories "Build and run the app" (P1) and "Verify build integrity" (P2), and parent FR-001, FR-004, FR-008, FR-009.
 
+## Clarifications
+
+### Session 2026-09-05
+
+- Q: What happens when the app boots with PostgreSQL 18 down? → A: Boot succeeds; DB connection failures surface in the log / at first use — no silent fallback. Hard fail-fast (exit non-zero on unreachable config) stays feature 005.
+- Q: May the skeleton include test-scope dependencies? → A: Yes — `quarkus-junit` (test scope) plus one minimal boot smoke test; the runtime dependency set stays exactly the constitution-mandated minimum, making `./mvnw verify` non-trivial.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Build and run the app (Priority: P1)
@@ -32,13 +39,13 @@ observing a successful startup log line with no errors.
 
 A developer (or CI-style check) runs `./mvnw package` / `./mvnw verify` on a
 clean checkout and confirms the dependency set from the constitution compiles
-and tests pass.
+and the minimal boot smoke test passes.
 
 **Why this priority**: Locked stack = the build must succeed reproducibly on a
 clean machine with zero pre-installed artifacts beyond Maven/Java.
 
 **Independent Test**: Can be fully tested by running the build command on a
-clean checkout and observing a successful build.
+clean checkout and observing a successful build + one passing smoke test.
 
 **Acceptance Scenarios**:
 
@@ -46,6 +53,8 @@ clean checkout and observing a successful build.
    build succeeds.
 2. **Given** a modified pom that drops a mandated dependency, **When** the build
    runs, **Then** any feature relying on that dependency fails to compile.
+3. **Given** a clean checkout, **When** `./mvnw verify` runs, **Then** a minimal
+   boot smoke test executes and passes.
 
 ---
 
@@ -57,10 +66,10 @@ clean checkout and observing a successful build.
 
 - What happens when the Maven wrapper JAR is missing from the repo? (Wrapper
   must be committed so `./mvnw` works offline; clone must be self-contained.)
-- What happens when the app starts with PostgreSQL 18 down? (Skeleton must not
-  mask the dependency — no silent fallback; datasource configuration that
-  cannot connect should surface at boot rather than pretend. Fail-fast config
-  validation itself is feature 005.)
+- What happens when the app starts with PostgreSQL 18 down? (Boot must still
+  succeed — Quarkus datasource is lazy; DB connection failures surface in the
+  log / at first use, not silently masked. No silent fallback. Hard fail-fast
+  (exit non-zero on unreachable config) is feature 005.)
 - What happens when Java 21 is not the active toolchain? (Build must fail with
   a clear, attributable error, not a cryptic class-version failure.)
 
@@ -74,7 +83,9 @@ clean checkout and observing a successful build.
   constitution: RESTEasy Reactive + Jackson for the HTTP tool surface, JPA
   Panache + PostgreSQL 18 JDBC for persistence, and SmallRye Config for
   configuration loading. WebSockets and MCP wire-protocol SDKs MUST NOT be
-  added (deferred to iteration 2 / out of REST-first plan).
+  added (deferred to iteration 2 / out of REST-first plan). A single
+  test-scope dependency (`quarkus-junit`) for the boot smoke test is
+  permitted and does not count toward the runtime tool surface.
 - **FR-008**: The app MUST boot in dev mode (`./mvnw quarkus:dev`) with no
   application feature code written, producing a successful startup log.
 - **FR-009**: The project MUST be single-replica / local-dev-first (no
@@ -100,11 +111,14 @@ clean checkout and observing a successful build.
 
 - The Maven wrapper (`.mvn/wrapper` + `mvnw`) is committed; Maven itself is
   not required to be pre-installed, only a Java 21 toolchain.
-- PostgreSQL 18 must be reachable at the composed host/port for a full happy-path
-  boot; the skeleton does not degrade gracefully in its absence (matches the
-  parent spec's "no silent fallback" note).
-- Dependency set is exactly the constitution-mandated minimum (FR-004); no
-  speculative libraries (e.g. Consul 2.0 client, WebSocket/MCP SDKs) are added.
+- PostgreSQL 18 need not be up for a skeleton boot (Quarkus lazy datasource);
+  when down, DB connection failures surface in the log / at first use — no
+  silent fallback and no boot-time crash. Hard fail-fast enforcement of
+  config validity remains feature 005.
+- Runtime dependency set is exactly the constitution-mandated minimum (FR-004);
+  no speculative libraries (e.g. Consul 2.0 client, WebSocket/MCP SDKs) are
+  added. Test-scope `quarkus-junit` for the boot smoke test is the single
+  approved exception.
 - This sub-feature depends on sub-feature 001-FR-01 (infrastructure reachable)
   for its boot acceptance scenario but is independently testable for build
   integrity (US2).

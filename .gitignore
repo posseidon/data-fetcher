@@ -1,0 +1,17 @@
+# Build output
+target/
+
+# IDEs / editors
+.idea/
+*.iml
+.vscode/
+.DS_Store
+.classpath
+.project
+.settings/
+
+# Ambient host tool copy of the working tree (recreated externally)
+/bin/
+
+# Logs
+*.log

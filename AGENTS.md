@@ -3,9 +3,10 @@
 Auto-generated from feature plans. Last updated: 2026-09-05
 
 ## Active Technologies
-- N/A — no application code in this sub-feature (app stack: Quarkus/Java 21 handled in 001-FR-03) + Docker Compose v2 (existing `docker-compose.yml` from 001-FR-01) | host filesystem bind moun (001-FR-02)
+- Java 21 (enforced via `maven.compiler.release=21` + maven-enforcer `requireJavaVersion [21,22)`) + Quarkus LTS 3.33.3.1 (`io.quarkus.platform:quarkus-bom`) — RESTEasy Reactive + Jackson (`quarkus-rest-jackson`), JPA Panache, PostgreSQL 18 JDBC; SmallRye Config (baked into Quarkus core); test-scope `quarkus-junit` (001-project-skeleton)
+- Maven 3.9.9 via committed wrapper (`mvnw`, `mvnw.cmd`, `.mvn/wrapper/maven-wrapper.jar`) — clone is self-contained offline (001-FR-03)
+- N/A — no authoritative data in this sub-feature (Bronze/PostgreSQL consumers arrive with features 002-004) — `application.properties` deferred to 001-FR-04 (001-project-skeleton)
 - Host path `~/data/bronze` → container `/data/bronze` (bind mount, not a named volume) (001-FR-02)
-
 - Docker Compose v2 + PostgreSQL 18 + Consul 2.0 (001-project-skeleton)
 - PostgreSQL 18 (001-project-skeleton)
 
@@ -36,11 +37,8 @@ No application code in this sub-feature (infrastructure declaration).
 App conventions (Quarkus/Java 21) tracked from 001-FR-03 onward.
 
 ## Recent Changes
-- 001-FR-02: Added N/A — no application code in this sub-feature (app stack: Quarkus/Java 21 handled in 001-FR-03) + Docker Compose v2 (existing `docker-compose.yml` from 001-FR-01) | host filesystem bind moun
-
-- 001-project-skeleton: Added Docker Compose v2 infra — PostgreSQL 18 +
-  Consul 2.0 on `df-net` bridge, loopback-only bindings, readiness
-  healthchecks, dynamic-port CI escape hatch.
+- 001-project-skeleton: Added Java 21 (enforced via `maven.compiler.release=21` + maven-enforcer `requireJavaVersion [21,22)`) + Quarkus LTS 3.33.3.1 (`io.quarkus.platform:quarkus-bom`) — RESTEasy Reactive + Jackson, JPA Panache, PostgreSQL 18 JDBC; SmallRye Config (baked into Quarkus core); test-scope `quarkus-junit` (001-FR-03)
+- 001-project-skeleton: Added Docker Compose v2 infra — PostgreSQL 18 + Consul 2.0 on `df-net` bridge, loopback-only bindings, readiness healthchecks, dynamic-port CI escape hatch.
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->
