@@ -3,7 +3,7 @@
 The interface this sub-feature exposes to developers, E2E tests, and all later
 features. Stable once implemented — the Quarkus app service (001-FR-03/04),
 the artifact writer (feature 004), and the app config (001-FR-04
-`application.properties`) bind against the path contract below, not against
+`application-dev.properties`) bind against the path contract below, not against
 arbitrary values.
 
 ## Path contract
@@ -16,7 +16,7 @@ arbitrary values.
 | Carrier service (this slice) | `df-bronze-mount` (image `busybox`) |
 
 The container path `/data/bronze` MUST equal the constitution default and the
-`application.properties` default set by 001-FR-04. If either changes, this
+`application-dev.properties` default set by 001-FR-04. If either changes, this
 contract and those defaults MUST change together (breaking change).
 
 ## First-boot contract

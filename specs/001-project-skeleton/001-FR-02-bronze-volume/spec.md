@@ -85,7 +85,7 @@ and confirming it appears at `~/data/bronze` on the host (and vice versa).
 
 - The host path is `~/data/bronze`; the container path is `/data/bronze`
   (matches the constitution's default Bronze root, also the default in
-  sub-feature 001-FR-04's `application.properties`).
+  sub-feature 001-FR-04's `application-dev.properties`).
 - `~/data/bronze` MUST be pre-created on the host before `docker compose up`
   (via `mkdir -p ~/data/bronze`); compose will not auto-create it.
 - No application code writes to Bronze in this sub-feature; only the mount

@@ -34,7 +34,8 @@ at `~/data/bronze` on the host.
 
 A developer runs the documented dev boot (`./mvnw quarkus:dev`). The Quarkus
 app on Java 21 starts in dev mode with virtual threads enabled, loads
-configuration from `application.properties`, and connects to the local
+configuration from `application-dev.properties` (dev profile; base
+`application.properties` is an empty presence marker), and connects to the local
 PostgreSQL 18. No feature endpoints are required yet.
 
 **Why this priority**: A bootable skeleton proves the locked stack works before
@@ -84,7 +85,8 @@ the dependency graph itself.
 - What happens when the Maven wrapper JAR is missing from the repo? (Clone must
   be self-contained; wrapper must be committed so `./mvnw` works offline.)
 - What happens when the app starts with PostgreSQL 18 down? (Fetch/query features
-  fail later; skeleton must not mask the dependency — no silent fallback.)
+  fail later; skeleton must not mask the dependency — no silent fallback.
+  Superseded for the dev profile by 001-FR-04 SC-007: boot fails loudly.)
 
 ## Requirements *(mandatory)*
 
@@ -108,9 +110,10 @@ the dependency graph itself.
   004).
 - **FR-006**: Virtual threads MUST be enabled by default in the runtime
   configuration.
-- **FR-007**: `application.properties` MUST carry sane local-dev defaults
+- **FR-007**: `application-dev.properties` MUST carry sane local-dev defaults
   (PostgreSQL 18 datasource at the composed host/port, Bronze root default
-  `/data/bronze`), overridable without code change.
+  `/data/bronze`), overridable without code change; base `application.properties`
+  exists EMPTY as a Quarkus presence marker only.
 - **FR-008**: The app MUST boot in dev mode (`./mvnw quarkus:dev`) with no
   application feature code written, producing a successful startup log.
 - **FR-009**: The project MUST be single-replica / local-dev-first (no
@@ -122,7 +125,8 @@ the dependency graph itself.
 
 - **Infrastructure footprint**: the two containers (PostgreSQL 18, Consul 2.0) and the
   Bronze volume mount form the local runtime environment all features share.
-- **runtime config artifact**: `application.properties` (defaults) + compose
+- **runtime config artifact**: `application-dev.properties` (defaults; base
+  `application.properties` an empty marker) + compose
   env vars; not authoritative data, but the contract skeleton features 001-004
   read.
 
