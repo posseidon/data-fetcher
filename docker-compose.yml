@@ -1,0 +1,53 @@
+name: df-infra
+
+services:
+  df-postgres:
+    image: postgres:18-alpine
+    container_name: df-postgres
+    depends_on:
+      df-consul:
+        condition: service_healthy
+    networks:
+      df-net:
+        ipv4_address: 172.20.0.10
+    environment:
+      - POSTGRES_DB=df_agent_db
+      - POSTGRES_USER=df_dev_user
+      - POSTGRES_PASSWORD=df_dev_secret
+    ports:
+      - "127.0.0.1:${POSTGRES_HOST_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U df_dev_user -d df_agent_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    volumes:
+      - df-postgres-data:/var/lib/postgresql
+  df-consul:
+    image: hashicorp/consul:2.0.3
+    container_name: df-consul
+    command: agent -server -bootstrap-expect=1 -bind=0.0.0.0 -client=0.0.0.0 -data-dir=/consul/data -ui
+    networks:
+      - df-net
+    ports:
+      - "127.0.0.1:${CONSUL_HTTP_HOST_PORT:-8500}:8500"
+      - "127.0.0.1:${CONSUL_DNS_HOST_PORT:-8600}:8600/udp"
+      - "127.0.0.1:${CONSUL_DNS_HOST_PORT:-8600}:8600/tcp"
+    volumes:
+      - ./consul/config:/consul/config
+    healthcheck:
+      test: ["CMD", "consul", "members"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+networks:
+  df-net:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+
+volumes:
+  df-postgres-data: {}
