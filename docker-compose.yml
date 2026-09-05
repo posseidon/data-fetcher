@@ -42,6 +42,16 @@ services:
       timeout: 5s
       retries: 10
       start_period: 10s
+  df-bronze-mount:
+    image: busybox
+    container_name: df-bronze-mount
+    command: sleep infinity
+    networks:
+      - df-net
+    volumes:
+      - type: bind
+        source: ${HOME}/data/bronze
+        target: /data/bronze
 
 networks:
   df-net:
